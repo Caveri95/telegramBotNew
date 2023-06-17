@@ -1,10 +1,11 @@
 package com.example.telegrambot.listener;
 
+import com.example.telegrambot.entity.NotificationTask;
+import com.example.telegrambot.service.NotificationTaskService;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
 import jakarta.annotation.PostConstruct;
@@ -29,9 +30,11 @@ public class TelegramBotUpdateListener implements UpdatesListener {
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     private final TelegramBot telegramBot;
+    private final NotificationTaskService notificationTaskService;
 
-    public TelegramBotUpdateListener(TelegramBot telegramBot) {
+    public TelegramBotUpdateListener(TelegramBot telegramBot, NotificationTaskService notificationTaskService) {
         this.telegramBot = telegramBot;
+        this.notificationTaskService = notificationTaskService;
     }
 
     @PostConstruct
@@ -65,7 +68,11 @@ public class TelegramBotUpdateListener implements UpdatesListener {
                             sendMessage(chatId, "Неккоректный формат даты и/или времени!");
                         } else {
                             String txt = matcher.group(2);
-
+                            NotificationTask notificationTask = new NotificationTask();
+                            notificationTask.setChatId(chatId);
+                            notificationTask.setMessage(txt);
+                            notificationTask.setNotificationDataTime(dataTime);
+                            notificationTaskService.save(notificationTask);
                         }
 
                     } else {
