@@ -46,7 +46,9 @@ public class TelegramBotUpdateListener implements UpdatesListener {
     @Override
     public int process(List<Update> updates) {
         try {
-            updates.forEach(update -> {
+            updates.stream()
+                    .filter(update -> update.message() != null)
+                    .forEach(update -> {
                 logger.info("Handles update: {}", update);
                 Message message = update.message();
                 Long chatId = message.chat().id();
@@ -73,6 +75,7 @@ public class TelegramBotUpdateListener implements UpdatesListener {
                             notificationTask.setMessage(txt);
                             notificationTask.setNotificationDataTime(dataTime);
                             notificationTaskService.save(notificationTask);
+                            sendMessage(chatId, "Задача успешно запланирована");
                         }
 
                     } else {
