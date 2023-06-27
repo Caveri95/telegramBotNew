@@ -13,7 +13,4 @@ public interface NotificationTaskRepository extends JpaRepository<NotificationTa
     List<NotificationTask> findAllByNotificationDataTime(LocalDateTime dateTime);
 
     List<NotificationTask> findAllByNotificationDataTimeAndChatId(LocalDateTime dateTime, long chatId);
-
-    /*@Query("SELECT nt FROM NotificationTask nt WHERE nt.user.name LIKE %:nameLike%")
-    List<NotificationTask> findAllByNameLike(@Param("nameLike") String nameLike);*/
 }
